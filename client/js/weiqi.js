@@ -122,7 +122,7 @@ $(function () {
 		if (positionSkipI && col >= 9) { // skip I
 			++col;
 		}
-		return String.fromCharCode(64 + col);
+		return String.fromCharCode(96 + col);
 	}
 	function getReadablePos(row, col) {
 		return getColPositionLabel(col) + getRowPositionLabel(row);
@@ -194,6 +194,10 @@ $(function () {
 	}
 	function getNameByColor(color) {
 		return (color == 1) ? '黑子' : '白子';
+	}
+
+	function getBWByColor(color) {
+		return (color == 1) ? 'B' : 'W';
 	}
 	function createChessboard(maxRow, maxCol) {
 		var str = '<table width="100%" cellspacing="' + cellSpacing + '" cellpadding="0" border="0">';
@@ -270,7 +274,38 @@ $(function () {
 		str += '@' + name;
 		str += '#' + step;
 		appendLog(str, ' step="' + step + '"');
+		console.log(allRecords);
 	}
+
+	//保存sgf
+	function saveSgf(allRecords) {
+		sgf = '(;DT[]KM[6.5]PB[]RE[]PW[]SZ[19]CA[UTF-8]';
+		// console.log(allRecords[1].add[0]);
+		for(var i = 1; i < allRecords.length; i++){
+			add = allRecords[i].add[0];
+			row = add[0];
+			col = add[1];
+			color = add[2];
+			name = add[3];
+			sgf += ';' + getBWByColor(color) + '[' + getColPositionLabel(col) + getColPositionLabel(row) + ']';
+		}
+		sgf += ')'
+		// console.log(sgf);
+		// 创建Blob对象
+		var textFileAsBlob = new Blob([sgf], {type:'text/plain'});
+		// 创建下载链接
+		var downloadLink = document.createElement("a");
+		downloadLink.download = "example.sgf"; // 文件名
+		// 创建一个链接到文件
+		downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+		// 隐藏下载链接
+		downloadLink.style.display = "none";
+		// 将下载链接添加到页面中
+		document.body.appendChild(downloadLink);
+		// 点击下载链接
+		downloadLink.click();
+	}
+
 	function findSameColor(found, row, col, color) {
 		if (getChessmanColor(row, col) != color) {
 			return;
@@ -788,6 +823,9 @@ $(function () {
 				break;
 			case 'loadSGF':
 				$dialog.show().fixedInCenter();
+				break;
+			case 'saveSGF':
+				saveSgf(allRecords);
 				break;
 			case 'reset':
 				if (lock) {
