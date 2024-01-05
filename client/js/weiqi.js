@@ -124,6 +124,9 @@ $(function () {
 		}
 		return String.fromCharCode(96 + col);
 	}
+	function getSGFPositionLabel(num) {
+		return String.fromCharCode(96 + num);
+	}
 	function getReadablePos(row, col) {
 		return getColPositionLabel(col) + getRowPositionLabel(row);
 	}
@@ -287,10 +290,10 @@ $(function () {
 			col = add[1];
 			color = add[2];
 			name = add[3];
-			sgf += ';' + getBWByColor(color) + '[' + getColPositionLabel(col) + getColPositionLabel(row) + ']';
+			sgf += ';' + getBWByColor(color) + '[' + getSGFPositionLabel(col) + getSGFPositionLabel(row) + ']';
 		}
 		sgf += ')'
-		// console.log(sgf);
+		console.log(sgf);
 		// 创建Blob对象
 		var textFileAsBlob = new Blob([sgf], {type:'text/plain'});
 		// 创建下载链接
